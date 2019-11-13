@@ -48,7 +48,7 @@
 														distrinbution mismatch.
 											Let's assume we would like to separate the following two class from each other, given this training data:
 										</p>
-										<span class="image1" style="text-align: center;" ><img src="../images/dwcca/training_data.png" alt="" style="width: 600px;" /></span>
+										<span class="figure" ><img src="../images/dwcca/training_data.png" style="width: 600px;" /></span>
 										<p>Although this training set is given to train our model, we know that the distribution of the test set is going to be slightly shifted from the training set.
 											</br>
 											Let's call the data distribution from the training set <b>the source distribution</b>,
@@ -59,19 +59,19 @@
 											</br>
 											We are not going to use the target domain for training our model, but I will show you how it looks like:
 											</p>
-											<span class="image1" style="text-align: center;" ><img src="../images/dwcca/all_data.png" alt="" style="width: 600px;" /></span>
+											<span class="figure"><img src="../images/dwcca/all_data.png" style="width: 600px;" /></span>
 											<p>
 											Now let's see what happens when we train a simple neural network to separate these two classes from eachother.
 											Here, I show the decision boundary of our network that is train on the training set to separate the two moons:
 											</p>
-											<span class="image1" style="text-align: center;" ><img src="../images/dwcca/no_norm.png" alt="" style="width: 600px;" /></span>
+											<span class="figure"><img src="../images/dwcca/no_norm.png" style="width: 600px;" /></span>
 											<p>
 											As you can see for yourself, although the samples of the two classes from the training set are perfectly separated, the boundary for the continuation of the data
 											in the mismatched condition is not very good.
 										  </br>
 										  If I would have drawn the boundary myself and correct the boundary of this model with a pen, it would look something like the following:
 											</p>
-											<span class="image1" style="text-align: center;" ><img src="../images/dwcca/my_boundary.png" alt="" style="width: 600px;" /></span>
+											<span class="figure" ><img src="../images/dwcca/my_boundary.png" style="width: 600px;" /></span>
 											<p>
 											Besides taking a pen and fix your model boundaries yourself, there is another way to fix this!
 											In <a href="https://arxiv.org/abs/1711.04022" target="_blank">this paper</a>, we showed that although you don't know how
@@ -84,32 +84,35 @@
 											by the <b>Within-class Covariance matrix</b> of the training representations.
 											Pretty awesome, right?
 											</br>
+											</br>
 											How does this work?
 											Pretty simple: You just have to compute the covariance of each class during the training set, and then average them and use it as the estimate of the unknown covariance:
 											</br>
-											<img src="../images/dwcca/wc.png"  align="middle" />
+											</p>
+											<span class="figure" ><img src="../images/dwcca/wc.png"  align="middle"  style="max-width:100%;max-height:100%;"/></span>
+											<p>
 											</br>
-											where <img src="../images/dwcca/sw.png" align="middle"> is the within-class covariance matrix, <img src="../images/dwcca/w.png" align="middle">
-											is the representation and <img src="../images/dwcca/what.png" align="middle"> is the mean of the representation in the minibatch batch.
-											C is the number of classes (2 in our case), and  <img src="../images/dwcca/nc.png" align="middle"> is the number of samples from the class c.
+											where <img src="../images/dwcca/sw.png" align="middle" style="max-width:100%;max-height:100%;"> is the within-class covariance matrix, <img src="../images/dwcca/w.png" align="middle"  style="max-width:100%;max-height:100%;">
+											is the representation and <img src="../images/dwcca/what.png" align="middle"  style="max-width:100%;max-height:100%;"> is the mean of the representation in the minibatch batch.
+											C is the number of classes (2 in our case), and  <img src="../images/dwcca/nc.png" align="middle"  style="max-width:100%;max-height:100%;"> is the number of samples from the class c.
 											</br>
 											You can then use this estimation to normalise your representation on the fly during training, using the <a href="https://en.wikipedia.org/wiki/Cholesky_decomposition" target="_blank">Cholesky decomposition</a> as follows:
 											</br>
-										<img src="../images/dwcca/cholesky.png"  align="middle" />
+										</p>
+										<span class="figure" >
+										<img src="../images/dwcca/cholesky.png"  align="middle" style="width: 200px;	max-width:100%;max-height:100%;"/>
+									    </span >
+									    <p>
 											</br>
 											Not only can we use this normalisation in the forward pass, but also there won't be any issues in the backward pass since the whole normalisation is differentiable,
 											therefore gradients of the computatinal graph used can be computed (at least in <a href="https://pytorch.org/" target="_blank">pytorch</a> and <a href="http://deeplearning.net/software/theano/" target="_blank">Theano</a>)!
-											During training, you can use the batch-projection <img src="../images/dwcca/b.png"  align="middle" />, and maintain a running average
-											as:
-											</br>
-												 	<img src="../images/dwcca/bhat.png"  align="middle" />
-											</br>
-											for inference in test time.
+											During training, you can use the batch-projection <img src="../images/dwcca/b.png"  align="middle" style="max-width:100%;max-height:100%;"/>, and maintain a running average
+											as <img src="../images/dwcca/bhat.png"  align="middle"  style="max-width:100%;max-height:100%;" /> for inference in test time.
 											</br>
 												</br>
 											By applying this normalization on the same neural net model used above, we will get the following boundary, which is much nicer than the previous model:
 										</p>
-										<span class="image1" style="text-align: center;" ><img src="../images/dwcca/wcc_norm.png" alt="" style="width: 600px;" /></span>
+										<span class="figure" style="text-align: center;" ><img src="../images/dwcca/wcc_norm.png" style="width: 600px;" /></span>
 										<p>
 											As you can see, the model boundary is following the data distribution and hence corrects the decision boundary of the model
 											which results in a better generalisation onto the unseen test set that is from a mismatch distribution.
