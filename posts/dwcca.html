@@ -1,164 +1,158 @@
 <!DOCTYPE HTML>
 <!--
-	Stellar by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
--->
+   Stellar by HTML5 UP
+   html5up.net | @ajlkn
+   Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+   -->
 <html>
-	<head>
-		<title>DWCCA</title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="../assets/css/main.css" />
-		<noscript><link rel="stylesheet" href="../assets/css/noscript.css" /></noscript>
-	</head>
-	<body class="is-preload">
-
-		<!-- Wrapper -->
-			<div id="wrapper">
-
-
-				<!-- Header -->
-					<header id="header">
-						<h1>Hamid's Blog</h1>
-						<p>Latest posts about my life and ongoing research.</p>
-					</header>
-	<!-- Nav -->
-					<nav id="nav">
-						<ul>
-							<li><a href="../index.html#intro" >Introduction</a></li>
-							<li><a href="../index.html#research">Research Interests</a></li>
-							<li><a href="../index.html#pubs">Publications</a></li>
-							<li><a href="../blog.html#mdgan" class="active">Blog</a></li>
-							<li><a href="../index.html#contact">Contact</a></li>
-						</ul>
-					</nav>
-					<section id="blog">
-					<!-- Main -->
-						<div id="main">
-							<!-- Introduction -->
-							<section id="dwcca" class="main">
-								<div class="spotlight">
-									<div class="content">
-										<header class="major">
-											<h2>Generalisation under distribution mismatch with Deep Within-class Covariance Analysis</h2>
-											<h4></h4>
-										</header>
-										<p>In this post, I want to talk about generalisation under
-														distrinbution mismatch.
-											Let's assume we would like to separate the following two class from each other, given this training data:
-										</p>
-										<span class="figure" ><img src="../images/dwcca/training_data.png" style="width: 600px;" /></span>
-										<p>Although this training set is given to train our model, we know that the distribution of the test set is going to be slightly shifted from the training set.
-											</br>
-											Let's call the data distribution from the training set <b>the source distribution</b>,
-											and let's name the distribution of the test set, <b>the target distribution</b>.
-											</br>
-											There is a large literature on transfer learning and domain adaptation with various assumptions and constrains about this problem,
-											but let us assume in our toy problem that we do not have access to any target domain data.
-											</br>
-											We are not going to use the target domain for training our model, but I will show you how it looks like:
-											</p>
-											<span class="figure"><img src="../images/dwcca/all_data.png" style="width: 600px;" /></span>
-											<p>
-											Now let's see what happens when we train a simple neural network to separate these two classes from eachother.
-											Here, I show the decision boundary of our network that is train on the training set to separate the two moons:
-											</p>
-											<span class="figure"><img src="../images/dwcca/no_norm.png" style="width: 600px;" /></span>
-											<p>
-											As you can see for yourself, although the samples of the two classes from the training set are perfectly separated, the boundary for the continuation of the data
-											in the mismatched condition is not very good.
-										  </br>
-										  If I would have drawn the boundary myself and correct the boundary of this model with a pen, it would look something like the following:
-											</p>
-											<span class="figure" ><img src="../images/dwcca/my_boundary.png" style="width: 600px;" /></span>
-											<p>
-											Besides taking a pen and fix your model boundaries yourself, there is another way to fix this!
-											In <a href="https://arxiv.org/abs/1711.04022" target="_blank">this paper</a>, we showed that although you don't know how
-											the distribution of your test set might shift from the training might shift, there is a way to estimate it in a resonable way.
-											What you need to do is to normalize the representation of the data that your model is using to create the boundary,with an estimate
-											of the covariance of that representation for unseen cases.
-											</br>
-											How, you ask?
-											It turns out that you can actually estimate an unknown covariance (in our case, the covariance of the representation in the test set)
-											by the <b>Within-class Covariance matrix</b> of the training representations.
-											Pretty awesome, right?
-											</br>
-											</br>
-											How does this work?
-											Pretty simple: You just have to compute the covariance of each class during the training set, and then average them and use it as the estimate of the unknown covariance:
-											</br>
-											</p>
-											<span class="figure" ><img src="../images/dwcca/wc.png"  align="middle"  style="max-width:100%;max-height:100%;"/></span>
-											<p>
-											</br>
-											where <img src="../images/dwcca/sw.png" align="middle" style="max-width:100%;max-height:100%;"> is the within-class covariance matrix, <img src="../images/dwcca/w.png" align="middle"  style="max-width:100%;max-height:100%;">
-											is the representation and <img src="../images/dwcca/what.png" align="middle"  style="max-width:100%;max-height:100%;"> is the mean of the representation in the minibatch batch.
-											C is the number of classes (2 in our case), and  <img src="../images/dwcca/nc.png" align="middle"  style="max-width:100%;max-height:100%;"> is the number of samples from the class c.
-											</br>
-											You can then use this estimation to normalise your representation on the fly during training, using the <a href="https://en.wikipedia.org/wiki/Cholesky_decomposition" target="_blank">Cholesky decomposition</a> as follows:
-											</br>
-										</p>
-										<span class="figure" >
-										<img src="../images/dwcca/cholesky.png"  align="middle" style="width: 200px;	max-width:100%;max-height:100%;"/>
-									    </span >
-									    <p>
-											</br>
-											Not only can we use this normalisation in the forward pass, but also there won't be any issues in the backward pass since the whole normalisation is differentiable,
-											therefore gradients of the computatinal graph used can be computed (at least in <a href="https://pytorch.org/" target="_blank">pytorch</a> and <a href="http://deeplearning.net/software/theano/" target="_blank">Theano</a>)!
-											During training, you can use the batch-projection <img src="../images/dwcca/b.png"  align="middle" style="max-width:100%;max-height:100%;"/>, and maintain a running average
-											as <img src="../images/dwcca/bhat.png"  align="middle"  style="max-width:100%;max-height:100%;" /> for inference in test time.
-											</br>
-												</br>
-											By applying this normalization on the same neural net model used above, we will get the following boundary, which is much nicer than the previous model:
-										</p>
-										<span class="figure" style="text-align: center;" ><img src="../images/dwcca/wcc_norm.png" style="width: 600px;" /></span>
-										<p>
-											As you can see, the model boundary is following the data distribution and hence corrects the decision boundary of the model
-											which results in a better generalisation onto the unseen test set that is from a mismatch distribution.
-										</p>
-
-									</p>
-
-
-
-
-<!-- Footer -->
-					<footer id="footer">
-						<section>
-							<h2>Research Interests</h2>
-							<p>Check out my research interests here.</p>
-							<ul class="actions">
-								<li><a href="../index.html#research" class="button">Go to my research interests</a></li>
-							</ul>
-						</section>
-						<section>
-							<h2>Contact</h2>
-							<dl class="alt">
-								<dt>Address</dt>
-								<dd>Johannes Kepler Universität Linz, Altenberger Straße 69, 4040 Linz, Austria</dd>
-								<dt>Email</dt>
-								<dd><a href="#">first.last@jku.at</a></dd>
-							</dl>
-							<ul class="icons">
-								<li><a href="https://twitter.com/heghbalz" class="icon fa-twitter alt"><span class="label">Twitter</span></a></li>
-								<li><a href="https://github.com/eghbalz" class="icon fa-github alt"><span class="label">GitHub</span></a></li>
-								<li><a href="http://www.cp.jku.at/people/eghbal-zadeh/" class="icon fa-university alt"><span class="label">GitHub</span></a></li>
-							</ul>
-						</section>
-						<p class="copyright">&copy; Me. Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
-					</footer>
-
-			</div>
-
-		<!-- Scripts -->
-			<script src="../assets/js/jquery.min.js"></script>
-			<script src="../assets/js/jquery.scrollex.min.js"></script>
-			<script src="../assets/js/jquery.scrolly.min.js"></script>
-			<script src="../assets/js/browser.min.js"></script>
-			<script src="../assets/js/breakpoints.min.js"></script>
-			<script src="../assets/js/util.js"></script>
-			<script src="../assets/js/main.js"></script>
-
-	</body>
+   <head>
+      <title>DWCCA</title>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+      <link rel="stylesheet" href="../assets/css/main.css" />
+      <noscript>
+         <link rel="stylesheet" href="../assets/css/noscript.css" />
+      </noscript>
+   </head>
+   <body class="is-preload">
+      <!-- Wrapper -->
+      <div id="wrapper">
+      <!-- Header -->
+      <header id="header">
+         <h1>Hamid's Blog</h1>
+         <p>Latest posts about my life and ongoing research.</p>
+      </header>
+      <!-- Nav -->
+      <!-- Nav -->
+      <nav id="nav">
+         <ul>
+            <li><a href="index.html#intro" class="active">Introduction</a></li>
+            <li><a href="index.html#research">Research Interests</a></li>
+            <li><a href="index.html#pubs">Publications</a></li>
+            <li><a href="index.html#talks">Talks</a></li>
+            <li><a href="index.html#tweets">Tweets</a></li>
+            <li><a href="blog.html#blog">Blog</a></li>
+            <li><a href="index.html#contact">Contact</a></li>
+         </ul>
+      </nav>
+      <section id="blog">
+      <!-- Main -->
+      <div id="main">
+      <!-- Introduction -->
+      <section id="dwcca" class="main">
+      <div class="spotlight">
+      <div class="content">
+         <header class="major">
+            <h2>Generalisation under distribution mismatch with Deep Within-class Covariance Analysis</h2>
+            <h4></h4>
+         </header>
+         <p>In this post, I want to talk about generalisation under
+            distrinbution mismatch.
+            Let's assume we would like to separate the following two class from each other, given this training data:
+         </p>
+         <span class="figure" ><img src="../images/dwcca/training_data.png" style="width: 600px;" /></span>
+         <p>Although this training set is given to train our model, we know that the distribution of the test set is going to be slightly shifted from the training set.
+            </br>
+            Let's call the data distribution from the training set <b>the source distribution</b>,
+            and let's name the distribution of the test set, <b>the target distribution</b>.
+            </br>
+            There is a large literature on transfer learning and domain adaptation with various assumptions and constrains about this problem,
+            but let us assume in our toy problem that we do not have access to any target domain data.
+            </br>
+            We are not going to use the target domain for training our model, but I will show you how it looks like:
+         </p>
+         <span class="figure"><img src="../images/dwcca/all_data.png" style="width: 600px;" /></span>
+         <p>
+            Now let's see what happens when we train a simple neural network to separate these two classes from eachother.
+            Here, I show the decision boundary of our network that is train on the training set to separate the two moons:
+         </p>
+         <span class="figure"><img src="../images/dwcca/no_norm.png" style="width: 600px;" /></span>
+         <p>
+            As you can see for yourself, although the samples of the two classes from the training set are perfectly separated, the boundary for the continuation of the data
+            in the mismatched condition is not very good.
+            </br>
+            If I would have drawn the boundary myself and correct the boundary of this model with a pen, it would look something like the following:
+         </p>
+         <span class="figure" ><img src="../images/dwcca/my_boundary.png" style="width: 600px;" /></span>
+         <p>
+            Besides taking a pen and fix your model boundaries yourself, there is another way to fix this!
+            In <a href="https://arxiv.org/abs/1711.04022" target="_blank">this paper</a>, we showed that although you don't know how
+            the distribution of your test set might shift from the training might shift, there is a way to estimate it in a resonable way.
+            What you need to do is to normalize the representation of the data that your model is using to create the boundary,with an estimate
+            of the covariance of that representation for unseen cases.
+            </br>
+            How, you ask?
+            It turns out that you can actually estimate an unknown covariance (in our case, the covariance of the representation in the test set)
+            by the <b>Within-class Covariance matrix</b> of the training representations.
+            Pretty awesome, right?
+            </br>
+            </br>
+            How does this work?
+            Pretty simple: You just have to compute the covariance of each class during the training set, and then average them and use it as the estimate of the unknown covariance:
+            </br>
+         </p>
+         <span class="figure" ><img src="../images/dwcca/wc.png"  align="middle"  style="max-width:100%;max-height:100%;"/></span>
+         <p>
+            </br>
+            where <img src="../images/dwcca/sw.png" align="middle" style="max-width:100%;max-height:100%;"> is the within-class covariance matrix, <img src="../images/dwcca/w.png" align="middle"  style="max-width:100%;max-height:100%;">
+            is the representation and <img src="../images/dwcca/what.png" align="middle"  style="max-width:100%;max-height:100%;"> is the mean of the representation in the minibatch batch.
+            C is the number of classes (2 in our case), and  <img src="../images/dwcca/nc.png" align="middle"  style="max-width:100%;max-height:100%;"> is the number of samples from the class c.
+            </br>
+            You can then use this estimation to normalise your representation on the fly during training, using the <a href="https://en.wikipedia.org/wiki/Cholesky_decomposition" target="_blank">Cholesky decomposition</a> as follows:
+            </br>
+         </p>
+         <span class="figure" >
+         <img src="../images/dwcca/cholesky.png"  align="middle" style="width: 200px;	max-width:100%;max-height:100%;"/>
+         </span >
+         <p>
+            </br>
+            Not only can we use this normalisation in the forward pass, but also there won't be any issues in the backward pass since the whole normalisation is differentiable,
+            therefore gradients of the computatinal graph used can be computed (at least in <a href="https://pytorch.org/" target="_blank">pytorch</a> and <a href="http://deeplearning.net/software/theano/" target="_blank">Theano</a>)!
+            During training, you can use the batch-projection <img src="../images/dwcca/b.png"  align="middle" style="max-width:100%;max-height:100%;"/>, and maintain a running average
+            as <img src="../images/dwcca/bhat.png"  align="middle"  style="max-width:100%;max-height:100%;" /> for inference in test time.
+            </br>
+            </br>
+            By applying this normalization on the same neural net model used above, we will get the following boundary, which is much nicer than the previous model:
+         </p>
+         <span class="figure" style="text-align: center;" ><img src="../images/dwcca/wcc_norm.png" style="width: 600px;" /></span>
+         <p>
+            As you can see, the model boundary is following the data distribution and hence corrects the decision boundary of the model
+            which results in a better generalisation onto the unseen test set that is from a mismatch distribution.
+         </p>
+         </p>
+         <!-- Footer -->
+         <footer id="footer">
+            <section>
+               <h2>Research Interests</h2>
+               <p>Check out my research interests here.</p>
+               <ul class="actions">
+                  <li><a href="../index.html#research" class="button">Go to my research interests</a></li>
+               </ul>
+            </section>
+            <section>
+               <h2>Contact</h2>
+               <dl class="alt">
+                  <dt>Address</dt>
+                  <dd>Johannes Kepler Universität Linz, Altenberger Straße 69, 4040 Linz, Austria</dd>
+                  <dt>Email</dt>
+                  <dd><a href="#">first.last@jku.at</a></dd>
+               </dl>
+               <ul class="icons">
+                  <li><a href="https://twitter.com/heghbalz" class="icon fa-twitter alt"><span class="label">Twitter</span></a></li>
+                  <li><a href="https://github.com/eghbalz" class="icon fa-github alt"><span class="label">GitHub</span></a></li>
+                  <li><a href="http://www.cp.jku.at/people/eghbal-zadeh/" class="icon fa-university alt"><span class="label">GitHub</span></a></li>
+               </ul>
+            </section>
+            <p class="copyright">&copy; Me. Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
+         </footer>
+      </div>
+      <!-- Scripts -->
+      <script src="../assets/js/jquery.min.js"></script>
+      <script src="../assets/js/jquery.scrollex.min.js"></script>
+      <script src="../assets/js/jquery.scrolly.min.js"></script>
+      <script src="../assets/js/browser.min.js"></script>
+      <script src="../assets/js/breakpoints.min.js"></script>
+      <script src="../assets/js/util.js"></script>
+      <script src="../assets/js/main.js"></script>
+   </body>
 </html>
