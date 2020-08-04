@@ -21,7 +21,120 @@
          <header id="header" class="alt">
             <span class="logo"><img src="images/logo.png" alt="" /></span>
             <h1>Hamid's Personal Homepage</h1>
-            <p>Machine Learning Researcher</p>
+            <p id="blink">Machine Learning </p>
+            <p id="typewriter" data-typewriter="Scientist, Engineer, Enthusiast, Reader, Researcher"></p>
+            <span class="blinking-cursor">|</span>
+            <style>
+               p, span{
+               display:inline;
+               }
+               .blinking-cursor {
+               color: #2E3D48;
+               -webkit-animation: 1s blink step-end infinite;
+               -moz-animation: 1s blink step-end infinite;
+               -ms-animation: 1s blink step-end infinite;
+               -o-animation: 1s blink step-end infinite;
+               animation: 1s blink step-end infinite;
+               }
+               @keyframes "blink" {
+               from, to {
+               color: transparent;
+               }
+               50% {
+               color: black;
+               }
+               }
+               @-moz-keyframes blink {
+               from, to {
+               color: transparent;
+               }
+               50% {
+               color: black;
+               }
+               }
+               @-webkit-keyframes "blink" {
+               from, to {
+               color: transparent;
+               }
+               50% {
+               color: black;
+               }
+               }
+               @-ms-keyframes "blink" {
+               from, to {
+               color: transparent;
+               }
+               50% {
+               color: black;
+               }
+               }
+               @-o-keyframes "blink" {
+               from, to {
+               color: transparent;
+               }
+               50% {
+               color: black;
+               }
+               }
+            </style>
+            <script>
+               var typewriter = function(txt) {
+               var container = document.getElementById('typewriter'),
+                 speed = 66,
+                 i = 0,
+                 wordsObj = txt.split(" ")
+               container.textContent = "";
+               console.log(txt)
+               runAllWords();
+               function runAllWords() {
+               
+                 if (i < wordsObj.length) {
+                   var a = (i == 0) ? i : i - 1;
+                   setTimeout(function() {
+                     showWord(wordsObj[i], 0)
+                   }, wordsObj[a].length * speed);
+                 }
+               }
+               
+               function showWord(word, countWord) {
+                 if (countWord < word.length) {
+                   setTimeout(function() {
+                     showLetter(word, countWord)
+                   }, speed);
+                 } else {
+                   container.textContent = container.textContent + " ";
+                   i += 1;
+                   runAllWords();
+                 }
+                 if (i === wordsObj.length) {
+                   console.log('complete')
+                 }
+               }
+               
+               function showLetter(word, countWord) {
+                 container.textContent = container.textContent + word[countWord];
+                 showWord(word, countWord + 1);
+               }
+               }
+               
+               
+               var i = 0;
+               function myLoop () {  
+               //  create a loop function
+               
+               var dataType = document.getElementById('typewriter').dataset.typewriter,
+                  w = dataType.split(',')
+               setTimeout(function () {    
+                 typewriter(w[i]);        
+                 i++;                   
+                 if (i < w.length) {         
+                    myLoop();           
+                 }                      
+               }, 3000)
+               }
+               
+               myLoop();
+            </script>
          </header>
          <!-- Nav -->
          <nav id="nav">
@@ -213,7 +326,7 @@
                   </p>
                </header>
             </section>
-            <section id="tweets" class="main special">
+            <section id="tweets" class="main special" style="display: block; text-align:left; margin: 35px 70px;">
                <header class="major">
                   <h2>Tweets</h2>
                   <a class="twitter-timeline" href="https://twitter.com/heghbalz?ref_src=twsrc%5Etfw">Here are my latest tweets</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
@@ -223,11 +336,12 @@
             <section id="blog" class="main special">
                <header class="major">
                   <h2>Blog</h2>
-                  <p>You can find my latest posts about my life and ongoing research.</p>
+                  <p style="display: block; text-align:left; margin: 35px 70px;"> You can find my latest posts about my life and ongoing research.</p>
                </header>
-               <footer class="major">
-                  <ul class="actions special">
-                     <li><a href="blog.html" class="button primary">Go to my blog</a></li>
+               <footer class="major" >
+                  <ul class="actions special" >
+                      
+                      <li><a href="blog.html" class="button primary">Go to my blog</a></li>
                   </ul>
                </footer>
             </section>
@@ -235,13 +349,13 @@
             <section id="contact" class="main special">
                <header class="major">
                   <h2>Contact</h2>
-                  <p>You can reach me on twitter or via email. If you are interested in collaborations or discussions about my research, don't hesitate to contact me!</p>
+                  <p style="display: block; text-align:left; margin: 35px 70px;"> You can reach me on twitter or via email. If you are interested in collaborations or discussions about my research, don't hesitate to contact me!</p>
                </header>
                <footer class="major">
                   <ul class="actions special">
                      <li><a href="mailto:hamid.eghbal-zadeh@jku.at" class="button primary">Email</a></li>
                      <li><a href="https://twitter.com/heghbalz" class="button">Twitter</a></li>
-                  </ul>
+                   </ul></br>
                </footer>
             </section>
          </div>
