@@ -21,9 +21,120 @@
          <header id="header" class="alt">
             <span class="logo"><img src="images/logo.png" alt="" /></span>
             <h1>Hamid's Personal Homepage</h1>
-            <p>
-               Machine Learning Researcher<br />
-               <!--p> email: first.last@jku.at<br>twitter: <a href="https://twitter.com/heghbalz">@heghbalz</a></p-->
+            <p id="blink">Machine Learning </p>
+            <p id="typewriter" data-typewriter="Researcher, Scientist, Engineer, Enthusiast"></p>
+            <span class="blinking-cursor">|</span>
+            <style>
+               p, span{
+               display:inline;
+               }
+               .blinking-cursor {
+               color: #2E3D48;
+               -webkit-animation: 1s blink step-end infinite;
+               -moz-animation: 1s blink step-end infinite;
+               -ms-animation: 1s blink step-end infinite;
+               -o-animation: 1s blink step-end infinite;
+               animation: 1s blink step-end infinite;
+               }
+               @keyframes "blink" {
+               from, to {
+               color: transparent;
+               }
+               50% {
+               color: black;
+               }
+               }
+               @-moz-keyframes blink {
+               from, to {
+               color: transparent;
+               }
+               50% {
+               color: black;
+               }
+               }
+               @-webkit-keyframes "blink" {
+               from, to {
+               color: transparent;
+               }
+               50% {
+               color: black;
+               }
+               }
+               @-ms-keyframes "blink" {
+               from, to {
+               color: transparent;
+               }
+               50% {
+               color: black;
+               }
+               }
+               @-o-keyframes "blink" {
+               from, to {
+               color: transparent;
+               }
+               50% {
+               color: black;
+               }
+               }
+            </style>
+            <script>
+               var typewriter = function(txt) {
+               var container = document.getElementById('typewriter'),
+                 speed = 66,
+                 i = 0,
+                 wordsObj = txt.split(" ")
+               container.textContent = "";
+               console.log(txt)
+               runAllWords();
+               function runAllWords() {
+               
+                 if (i < wordsObj.length) {
+                   var a = (i == 0) ? i : i - 1;
+                   setTimeout(function() {
+                     showWord(wordsObj[i], 0)
+                   }, wordsObj[a].length * speed);
+                 }
+               }
+               
+               function showWord(word, countWord) {
+                 if (countWord < word.length) {
+                   setTimeout(function() {
+                     showLetter(word, countWord)
+                   }, speed);
+                 } else {
+                   container.textContent = container.textContent + " ";
+                   i += 1;
+                   runAllWords();
+                 }
+                 if (i === wordsObj.length) {
+                   console.log('complete')
+                 }
+               }
+               
+               function showLetter(word, countWord) {
+                 container.textContent = container.textContent + word[countWord];
+                 showWord(word, countWord + 1);
+               }
+               }
+               
+               
+               var i = 0;
+               function myLoop () {  
+               //  create a loop function
+               
+               var dataType = document.getElementById('typewriter').dataset.typewriter,
+                  w = dataType.split(',')
+               setTimeout(function () {    
+                 typewriter(w[i]);        
+                 i++;                   
+                 if (i < w.length) {         
+                    myLoop();           
+                 }                      
+               }, 3000)
+               }
+               
+               myLoop();
+            </script>
          </header>
          <!-- Nav -->
          <nav id="nav">
@@ -59,7 +170,8 @@
                         <b>Jun 2019:</b> 1 paper (poster) accepted to CVPR 2019 main conference.</br>
                         <b>Sep 2018:</b> 1 paper (oral) accepted to NeurIPS 2018, workshop of Interpretability and Robustness in Audio, Speech and Language.</br>
                         <b>Jun 2018:</b> <a target="_blank" href="https://www.liebertpub.com/doi/full/10.1089/cmb.2018.0172">My research</a> has been featured in <a target="_blank" href="https://www.pressreader.com/austria/der-standard/20180613/282411285023118">Der Standard magazine</a>.
-                     <ul class="actions"></br>
+                     <ul class="actions">
+                        </br>
                         <li><a href="news.html" class="button">See all news</a></li>
                      </ul>
                   </div>
@@ -169,7 +281,10 @@
                <header class="major">
                   <h2>Talks</h2>
                   </br></br>
-                  <p style="text-align:left"><b>2020<hr></b></br></p>
+                  <p style="text-align:left">
+                     <b>
+                        2020
+                  <hr></b></br></p>
                   <p style="text-align:left"><b>On the Inductive Biases in Data Augmentation and Adversarial Robustness.</b> 
                      </br>Talk at the <a target="_blank" href="http://aaiss.ceit.aut.ac.ir/presenters/21">Amirkabir Artificial Intelligence Summer Summit (AAISS) 2020</a>.
                      </br></br><span class="inductive" align="center" ><img src="images/inductive_bias.png" width="300" /></span>
@@ -192,13 +307,19 @@
                      });
                   </script>
                   </br></br>
-                  <p style="text-align:left"><b>2019<hr></b></br></p>
+                  <p style="text-align:left">
+                     <b>
+                        2019
+                  <hr></b></br></p>
                   <p style="text-align:left"><b>Representation Learning under Incomplete and Imprecise Information Conditions.</b>
                      </br>Talk at the <a target="_blank" href="https://www.ias.informatik.tu-darmstadt.de/Teaching/TalksPriorToMay2020#wikitext">Intelligent Autonomous Systems Group of the Computer Science Department of the Technische Universitaet Darmstadt</a>.
                      </br></br><span class="wcn" align="center"><img src="images/dwcca/my_boundary.png"  width="300" /></span>
                   </p>
                   </br></br>
-                  <p style="text-align:left"><b>2018<hr></b></br></p>
+                  <p style="text-align:left">
+                     <b>
+                        2018
+                  <hr></b></br></p>
                   <p style="text-align:left"><b>Deep Within-Class Covariance Analysis for Robust Deep Audio Representation Learning.</b>
                      </br>Talk at the <a target="_blank" href="https://irasl.gitlab.io/">Interpretability and Robustness in Audio, Speech and Language, NeurIPS 2018 Workshop</a>.
                      </br></br><span class="dwcca" align="center"><img src="images/dwcca.png"  width="300" /></span>
@@ -207,9 +328,9 @@
             </section>
             <section id="tweets" class="main special">
                <header class="major">
-                  <h2>Tweets</h2>  
+                  <h2>Tweets</h2>
                   <a class="twitter-timeline" href="https://twitter.com/heghbalz?ref_src=twsrc%5Etfw">Here are my latest tweets</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-               </header>  
+               </header>
             </section>
             <!-- Get Started -->
             <section id="blog" class="main special">
