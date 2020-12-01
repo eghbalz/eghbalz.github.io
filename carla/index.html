@@ -6,7 +6,9 @@
    -->
 <html>
    <head>
-      <title>Hamid's Blog</title>
+      <title>CARLA</title>
+       <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+       <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
       <meta charset="utf-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
       <link rel="stylesheet" href="../assets/css/main.css" />
@@ -45,9 +47,169 @@
                         <header class="major">
                            <h2>Context-Adaptive Reinforcement Learning using Unsupervised Learning of Context Variables</h2>
                         </header>
-                        <p>Blog post coming soon...</p>
-                         <iframe width="560" height="315" src="https://www.youtube.com/embed/V0hLsvazlVc" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                         
+                        <h3>Teaser</h3>
+                        <iframe width="560" height="315" src="https://www.youtube.com/embed/V0hLsvazlVc" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        <h3>Poster</h3>
+                        <img src="img/poster.png" width="80%"/>
+                        <h3>Introduction</h3>
+                            <p>In Reinforcement Learning, an agent interacts with an environment through receiving observations, executing actions, and receiving rewards.
+                            The goal of the agent is to maximise the cumulative reward that is defined based on the task at hand. 
+                            In some scenarios however, the behaviour of the environment as well as the distribution of the observations can change over time.
+                                Under certain conditions, the change in the observation distribution is caused by some variability that changes the <i>context</i> of the environment. Therefore, a change in context affects the distribution of the environment's observations.
+                            As such changes may occur numerous times, not only does the agent have to adapt to the new contexts, but it also has to <i>remember</i> the previous ones.
+                                This problem is known as Contextual Reinforcement Learning (CRL).
+                            </p>
+                            <p>As an example, consider a setting where users interact with a website, and the goal  of the website is to adapt to the user's needs, which might change depending on the current user.
+                            However, the behaviour of the user -- the environment -- is actually affected by some <i>unobserved</i> parameters such as age and gender.
+                            If the goal of the agent -- the website -- is to adapt to the needs of the user, it is often helpful to be able to infer the user's characteristics and adapt to them.
+                            Another example is a robot that sees the world through a camera, where the time of the day (day/night) or the surrounding location can affect how the robot perceives its environment.
+                            Hence, it is crucial that an agent can detect a context, and be able to adapt to it.
+                            </p>
+                            <p>In this paper, we provide a definition for Contextual Reinforcement Learning that assumes changing the context, affects the distribution of the states of the environment, resulting in a change in the distribution of the observations.
+                            Our definition is motivated by the generative process in a contextual world, where the context variables affect the states of the generative model of the world.
+                            Given this definition, we provide a solution using unsupervised learning of the context variable that allows for a better adaptation of the policy based on the context.
+                            More generally, in this work we are trying to answer the following questions:
+                            </p>
+                            <ol>
+                                <li>Does knowing the context variable help the policy to better adapt to different contexts?</li>
+                                <li>What characteristics does a predictive model need to predict context from observations?</li>
+                                <li>Can our learnt context variable help the policy to better adapt to different contexts?</li>
+                            </ol>
+                        
+                            <p>In order to answer these questions, we conduct a set of experiments to test the performance of an agent with and without knowing the context variable. 
+                            Additionally, we conduct experiments to investigate whether disentanglement is actually helpful for estimating the context.
+                            Further, using our proposed approach, we estimate the context variable in an unsupervised manner, and compare the performance of agents with and without this estimated variable.
+                            </p>
+                         
+                        <h3>Problem Definition</h3>
+                            <p>A Partially Observable Markov Decision Process (POMDP) is defined as a tuple \((\mathcal S, \mathcal A, \mathcal P, \mathcal R,  \Omega, \mathcal O)\), with \(\mathcal S\) being the state space , \(\mathcal A\) the action space, \(\mathcal P\) the transition probabilities, and \(\mathcal R\) the reward function.
+                            In this setting, the agent does not directly observe the true states of the environment, but receives observation \(o \in \Omega\).
+                            This observation is generated from the underlying system state \(s\) and the received action $a$, according to the probability distribution \(o \sim \mathcal O(o \vert s, a)\).
+                            </p>
+                            <p>
+                            In this work we consider finite-horizon episodic Contextual POMDPs (CPOMDPs).
+                            At the beginning of each episode an agent will encounter a specific POMDP depending on a randomly sampled context \(c \in \mathcal C\), which we assume to not change over time within an episode.
+                            While for regular POMDPs, the goal of an RL agent is to learn a policy \( \pi(a\mid o)\) that maximizes the expected cumulative reward, in CPOMDPs the agent has to learn a policy \( \pi(a \vert o, c)\) that further depends on a context \(c\).
+                            </p>
+                        
+                        <h3>Generative Process</h3>
+                            <p>
+                            We assume a generative process is in place such that everything within the environment is happening in a two-step generative process. First, a multivariate latent random variable \(z\) is sampled from a distribution \(P(z)\) , where \(z\) corresponds to  semantically meaningful factors of variation of the observations (e.g, shape, colour of the objects; density of objects). Second, the observation \(x\) is sampled from a conditional distribution \(P (x \vert z) \). We assume that the observation space has higher dimensionality than the semantic space, hence, the data space can be explained with substantially lower dimensional and semantically meaningful latent variable \( z\) , and is mapped to the high dimensional observation space \(x\).
+                            </p>
+                        <h3>Generative Process in Contextual Reinforcement Learning</h3>
+                            <p>
+                            In Contextual Reinforcement Learning, we assume that the environment \(\mathrm{E}_{z}(o_t, a_t)\) generates the next observation \(o_{t+1}\), given the current observation \(o_t\) and action \(a_t\), i.e., \(o_{t+1}=\mathrm{E}_{z}(o_t, a_t)\), with \(z\)  being a variable controlling its statics (e.g, shape or size of objects). In our generative view, the observations of an episode are generated from a generative model \(\mathrm{E}_{z}(o_t, a_t)\) in 3 steps as follows.
+                            In the first step, a multivariate latent random variable \(c \in \mathcal C\)  is sampled from a distribution \(P(c)\), where \(c\) corresponds to a context. In the second step, a multivariate latent random variable \(z\) is sampled from a conditional distribution \(P(z \vert c)\), where \(z\) corresponds to the state of the environment that controls the statics, defining how the environment generates the next observation, given he current observation and action during an episode. In the third step, the next observation \(o_{t+1}\) is generated from the environment's generative model \(\mathrm{E}_{z}(o_t, a_t)\).
+                            </p>
+                        <h3>Proposed Approach</h3>
+                            <p>In this section, we propose <b>C</b>ontext-<b>A</b>daptive <b>R</b>einforcement <b>L</b>earning <b>A</b>gent (<b>CARLA</b>), which is capable of adapting to new contexts in an environment, without any supervision or knowledge about the available contexts. CARLA consists of two parallel networks: a \textit{context network}, and a <i>representation network</i>. The context network aims at learning the context variable, while the representation network is aiming at learning a suitable representation from the environment.
+                            The output of these two networks are then further feed into the policy network, where an adaptive policy is formed given the environment variables and the context variable. The policy network then adapts the current policy, based on the context variable.                         A block-diagram of CARLA is provided below.
+                            </p>
+                            <img src="img/carla_diagram.png" width="40%"/>
+                            <p>As detailed before, our assumption in the generative process is that the context variables define the statics of the environment, which in turn defines the distribution of the observations within an episode. The aim of the context network is to reverse this process and estimate the context vector given the observations. As shown in the Figure below, it contains two main modules: a feature disentanglement module and a context learning module. The context network first estimates the the environment's statics, and further uses it to learn the context variable. This context factor is then feed to the policy network, in order to adapt the policy to the current context.
+                            </p>
+                            <img src="img/contextnet.png" width="40%"/>
+                            <p>
+                            The feature disentanglement module is an encoder part of a Variational Autoencoder (VAE), which is trained with annealing the Kullback Leibler (KL) Divergence term of the Evidence Lower Bound (ELBO). The VAE is trained using random samples drawn from an experience replay buffer. The context learning module is trained online given the observations received in each episode, along with the representation network and the policy network by optimizing the RL objective. This module learns upon the disentangled states of the environment, extracted using the feature disentanglement module explained above.
+                            </p>
+                            <p>The graphical models for various approaches in CRL is provided in the Figure below.</p>
+                            <img src="img/graph.png" width="40%"/>
+                            <p>
+                            As can be seen, our model has a different graphical model than DARLA (Higgins et. al, 2017) and VALOR (Achiam et, al. 2018). The main idea in CARLA, is to learn disentangled factors from the environment using pre-selected training data, in a similar manner to DARLA. In contrast, CARLA uses a recurrent context network that can build the sequential relationship for the disentangled factors, to predict the context variable, which might be useful in a partially-observable setting to infer the dynamics. Further, CARLA allows the agent to learn an unconstrained representation from the environment during training the agent via interacting with the environment. Although VALOR uses a sequential decoder, it differs from CARLA in various ways. For example VALOR assumes an observed context, in contrast to CARLA which estimates the context variable using a sequence of disentangled factors.
+                            </p>
+                        <h3>Preliminary Results</h3>
+                            <p>To investigate the usefulness of the ground-truth context variables, we provide some preliminary results using a numerical encoding of the states, as well as static objects and goodies, for reducing the complexity of the experiments. We define 5 different contexts as follows:</p>
+                             <table>
+                              <tr>
+                                <th>Context #</th>
+                                <th>Goal color</th>
+                                <th>Obstacle Color</th>
+                                <th>Goodie Color</th>
+                              </tr>
+                              <tr>
+                                <td>1</td>
+                                <td>Pink</td>
+                                <td>Red</td>
+                                <td>Orange</td>
+                              </tr>
+                              <tr>
+                                <td>2</td>
+                                <td>Brown</td>
+                                <td>Orange</td>
+                                <td>Red</td>
+                              </tr>
+                              <tr>
+                                <td>3</td>
+                                <td>Cyan</td>
+                                <td>Blue</td>
+                                <td>Gold</td>
+                              </tr>
+                              <tr>
+                                <td>4</td>
+                                <td>Teal</td>
+                                <td>Gold</td>
+                                <td>Blue</td>
+                              </tr>
+                              <tr>
+                                <td>5</td>
+                                <td>Plum</td>
+                                <td>Yello</td>
+                                <td>Olive</td>
+                              </tr>
+                            </table>
+                         <p>We compare 3 Vanilla Policy Gradient (VPG) agents on this environment: </p>
+                         <ol>
+                            <li>An agent without using ground-truth context variables.</li>
+                            <li>An agent that uses ground-truth context variables in their extended state.</li>
+                            <li>An agent that uses a conditioning gate with the context variables, that controls the state representation.</li>
+                        </ol>
+                        <p>In the following, we provide the reward plots, as well as the number of goodies and obstacles remained in the environment. These results are provided for 3 runs.</p>
+                        <h4>Reward Plots:</h4>
+                        <img src="img/preliminary_results/1cntx_Performance.png" width="40%"/>
+                         <img src="img/preliminary_results/2cntx_Performance.png" width="40%"/>
+                         <img src="img/preliminary_results/3cntx_Performance.png" width="40%"/>
+                         <img src="img/preliminary_results/4cntx_Performance.png" width="40%"/>
+
+                        <h4>Remaining Obstacle and Goodie Plots for 1 context:</h4>
+                        <img src="img/preliminary_results/1cntx_NObs_0.png" width="40%"/>
+                        <img src="img/preliminary_results/1cntx_NGoodies_0.png" width="40%"/>
+
+                        <h4>Remaining Obstacle and Goodie Plots for 2 contexts:</h4>
+                        <img src="img/preliminary_results/2cntx_NObs_0.png" width="40%"/>
+                        <img src="img/preliminary_results/2cntx_NGoodies_0.png" width="40%"/>
+                        <img src="img/preliminary_results/2cntx_NObs_1.png" width="40%"/>
+                        <img src="img/preliminary_results/2cntx_NGoodies_1.png" width="40%"/>
+
+                        <h4>Remaining Obstacle and Goodie Plots for 3 contexts:</h4>
+                        <img src="img/preliminary_results/3cntx_NObs_0.png" width="40%"/>
+                        <img src="img/preliminary_results/3cntx_NGoodies_0.png" width="40%"/>
+                        <img src="img/preliminary_results/3cntx_NObs_1.png" width="40%"/>
+                        <img src="img/preliminary_results/3cntx_NGoodies_1.png" width="40%"/>
+                        <img src="img/preliminary_results/3cntx_NObs_2.png" width="40%"/>
+                        <img src="img/preliminary_results/3cntx_NGoodies_2.png" width="40%"/>
+
+                        <h4>Remaining Obstacle and Goodie Plots for 4 contexts:</h4>
+                        <img src="img/preliminary_results/4cntx_NObs_0.png" width="40%"/>
+                        <img src="img/preliminary_results/4cntx_NGoodies_0.png" width="40%"/>
+                        <img src="img/preliminary_results/4cntx_NObs_1.png" width="40%"/>
+                        <img src="img/preliminary_results/4cntx_NGoodies_1.png" width="40%"/>
+                        <img src="img/preliminary_results/4cntx_NObs_2.png" width="40%"/>
+                        <img src="img/preliminary_results/4cntx_NGoodies_2.png" width="40%"/>
+                        <img src="img/preliminary_results/4cntx_NObs_3.png" width="40%"/>
+                        <img src="img/preliminary_results/4cntx_NGoodies_3.png" width="40%"/>
+
+                        <h4>Remaining Obstacle and Goodie Plots for 5 contexts:</h4>
+                        <img src="img/preliminary_results/5cntx_NObs_0.png" width="40%"/>
+                        <img src="img/preliminary_results/5cntx_NGoodies_0.png" width="40%"/>
+                        <img src="img/preliminary_results/5cntx_NObs_1.png" width="40%"/>
+                        <img src="img/preliminary_results/5cntx_NGoodies_1.png" width="40%"/>
+                        <img src="img/preliminary_results/5cntx_NObs_2.png" width="40%"/>
+                        <img src="img/preliminary_results/5cntx_NGoodies_2.png" width="40%"/>
+                        <img src="img/preliminary_results/5cntx_NObs_3.png" width="40%"/>
+                        <img src="img/preliminary_results/5cntx_NGoodies_3.png" width="40%"/>
+                        <img src="img/preliminary_results/5cntx_NObs_4.png" width="40%"/>
+                        <img src="img/preliminary_results/5cntx_NGoodies_4.png" width="40%"/>
                      </div>
                   </div>
                </section>
