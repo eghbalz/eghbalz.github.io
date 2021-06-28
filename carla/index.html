@@ -46,13 +46,20 @@
                   <div class="spotlight">
                      <div class="content">
                         <header class="major">
-                           <h2>Context-Adaptive Reinforcement Learning using Unsupervised Learning of Context Variables</h2>
+                          <h2>Context-Adaptive Reinforcement Learning using Unsupervised Learning of Context Variables</h2>
                         </header>
+                        <header class="major">
+                           <h3><b><a target="_blank" href="">Context-Adaptive Reinforcement Learning using Unsupervised Learning of Context Variables</a></b></h3>
+                             Hamid Eghbal-zadeh*, <a target="_blank" href="https://fhenkel.github.io/">Florian Henkel</a>*, Gerhard Widmer<br>
+                            *: equal contribution.
+                        </header>
+                        
+                         [<a target="_blank" href="https://preregister.science/papers_20neurips/48_paper.pdf">pre-registered paper</a>][<a target="_blank" href="">full paper</a>] [<a target="_blank" href="">environment</a>]
                         
                         <h3>Teaser</h3>
                         <iframe width="560" height="315" src="https://www.youtube.com/embed/V0hLsvazlVc" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        <h3>Poster</h3>
-                        <img src="img/poster.png" width="80%"/>
+                        
+                        
                         <h3>Introduction</h3>
                             <p>In Reinforcement Learning, an agent interacts with an environment through receiving observations, executing actions, and receiving rewards.
                             The goal of the agent is to maximise the cumulative reward that is defined based on the task at hand. 
@@ -119,99 +126,7 @@
                             <p>
                             As can be seen, our model has a different graphical model than DARLA (Higgins et. al, 2017) and VALOR (Achiam et, al. 2018). The main idea in CARLA, is to learn disentangled factors from the environment using pre-selected training data, in a similar manner to DARLA. In contrast, CARLA uses a recurrent context network that can build the sequential relationship for the disentangled factors, to predict the context variable, which might be useful in a partially-observable setting to infer the dynamics. Further, CARLA allows the agent to learn an unconstrained representation from the environment during training the agent via interacting with the environment. Although VALOR uses a sequential decoder, it differs from CARLA in various ways. For example VALOR assumes an observed context, in contrast to CARLA which estimates the context variable using a sequence of disentangled factors.
                             </p>
-                        <h3>Preliminary Results</h3>
-                            <p>To investigate the usefulness of the ground-truth context variables, we provide some preliminary results using a numerical encoding of the states, as well as static objects and goodies, for reducing the complexity of the experiments. We define 5 different contexts as follows:</p>
-                             <table>
-                              <tr>
-                                <th>Context #</th>
-                                <th>Goal color</th>
-                                <th>Obstacle Color</th>
-                                <th>Goodie Color</th>
-                              </tr>
-                              <tr>
-                                <td>1</td>
-                                <td>Pink</td>
-                                <td>Red</td>
-                                <td>Orange</td>
-                              </tr>
-                              <tr>
-                                <td>2</td>
-                                <td>Brown</td>
-                                <td>Orange</td>
-                                <td>Red</td>
-                              </tr>
-                              <tr>
-                                <td>3</td>
-                                <td>Cyan</td>
-                                <td>Blue</td>
-                                <td>Gold</td>
-                              </tr>
-                              <tr>
-                                <td>4</td>
-                                <td>Teal</td>
-                                <td>Gold</td>
-                                <td>Blue</td>
-                              </tr>
-                              <tr>
-                                <td>5</td>
-                                <td>Plum</td>
-                                <td>Yello</td>
-                                <td>Olive</td>
-                              </tr>
-                            </table>
-                         <p>We compare 3 Vanilla Policy Gradient (VPG) agents on this environment: </p>
-                         <ol>
-                            <li>An agent without using ground-truth context variables.</li>
-                            <li>An agent that uses ground-truth context variables in their extended state.</li>
-                            <li>An agent that uses a conditioning gate with the context variables, that controls the state representation.</li>
-                        </ol>
-                        <p>In the following, we provide the reward plots, as well as the number of goodies and obstacles remained in the environment. These results are provided for 3 runs.</p>
-                        <h4>Reward Plots:</h4>
-                        <img src="img/preliminary_results/1cntx_Performance.png" width="40%"/>
-                         <img src="img/preliminary_results/2cntx_Performance.png" width="40%"/>
-                         <img src="img/preliminary_results/3cntx_Performance.png" width="40%"/>
-                         <img src="img/preliminary_results/4cntx_Performance.png" width="40%"/>
-                         <img src="img/preliminary_results/5cntx_Performance.png" width="40%"/>
-
-                        <h4>Remaining Obstacle and Goodie Plots for 1 context:</h4>
-                        <img src="img/preliminary_results/1cntx_NObs_0.png" width="40%"/>
-                        <img src="img/preliminary_results/1cntx_NGoodies_0.png" width="40%"/>
-
-                        <h4>Remaining Obstacle and Goodie Plots for 2 contexts:</h4>
-                        <img src="img/preliminary_results/2cntx_NObs_0.png" width="40%"/>
-                        <img src="img/preliminary_results/2cntx_NGoodies_0.png" width="40%"/>
-                        <img src="img/preliminary_results/2cntx_NObs_1.png" width="40%"/>
-                        <img src="img/preliminary_results/2cntx_NGoodies_1.png" width="40%"/>
-
-                        <h4>Remaining Obstacle and Goodie Plots for 3 contexts:</h4>
-                        <img src="img/preliminary_results/3cntx_NObs_0.png" width="40%"/>
-                        <img src="img/preliminary_results/3cntx_NGoodies_0.png" width="40%"/>
-                        <img src="img/preliminary_results/3cntx_NObs_1.png" width="40%"/>
-                        <img src="img/preliminary_results/3cntx_NGoodies_1.png" width="40%"/>
-                        <img src="img/preliminary_results/3cntx_NObs_2.png" width="40%"/>
-                        <img src="img/preliminary_results/3cntx_NGoodies_2.png" width="40%"/>
-
-                        <h4>Remaining Obstacle and Goodie Plots for 4 contexts:</h4>
-                        <img src="img/preliminary_results/4cntx_NObs_0.png" width="40%"/>
-                        <img src="img/preliminary_results/4cntx_NGoodies_0.png" width="40%"/>
-                        <img src="img/preliminary_results/4cntx_NObs_1.png" width="40%"/>
-                        <img src="img/preliminary_results/4cntx_NGoodies_1.png" width="40%"/>
-                        <img src="img/preliminary_results/4cntx_NObs_2.png" width="40%"/>
-                        <img src="img/preliminary_results/4cntx_NGoodies_2.png" width="40%"/>
-                        <img src="img/preliminary_results/4cntx_NObs_3.png" width="40%"/>
-                        <img src="img/preliminary_results/4cntx_NGoodies_3.png" width="40%"/>
-
-                        <h4>Remaining Obstacle and Goodie Plots for 5 contexts:</h4>
-                        <img src="img/preliminary_results/5cntx_NObs_0.png" width="40%"/>
-                        <img src="img/preliminary_results/5cntx_NGoodies_0.png" width="40%"/>
-                        <img src="img/preliminary_results/5cntx_NObs_1.png" width="40%"/>
-                        <img src="img/preliminary_results/5cntx_NGoodies_1.png" width="40%"/>
-                        <img src="img/preliminary_results/5cntx_NObs_2.png" width="40%"/>
-                        <img src="img/preliminary_results/5cntx_NGoodies_2.png" width="40%"/>
-                        <img src="img/preliminary_results/5cntx_NObs_3.png" width="40%"/>
-                        <img src="img/preliminary_results/5cntx_NGoodies_3.png" width="40%"/>
-                        <img src="img/preliminary_results/5cntx_NObs_4.png" width="40%"/>
-                        <img src="img/preliminary_results/5cntx_NGoodies_4.png" width="40%"/>
+                         
                      </div>
                   </div>
                </section>
